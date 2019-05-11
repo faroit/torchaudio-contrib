@@ -2,7 +2,7 @@ import torch
 import math
 import torch.nn as nn
 
-from .functional import stft, complex_norm, \
+from .functional import stft, complex_norm, spectral_downmix, \
     create_mel_filter, phase_vocoder, apply_filterbank, \
     amplitude_to_db, db_to_amplitude, \
     mu_law_encoding, mu_law_decoding
@@ -113,6 +113,22 @@ class ComplexNorm(nn.Module):
 
     def forward(self, complex_specgrams):
         return complex_norm(complex_specgrams, self.power)
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(power={})'.format(self.power)
+
+
+class SpectralDownmix(nn.Module):
+    """
+    Wrap torchaudio_contrib.spectral_downmix in an nn.Module.
+    """
+
+    def __init__(self, power=1.0):
+        super(SpectralDownmix, self).__init__()
+        self.power = power
+
+    def forward(self, stft):
+        return spectral_downmix(stft, self.power)
 
     def __repr__(self):
         return self.__class__.__name__ + '(power={})'.format(self.power)
@@ -239,7 +255,7 @@ class StretchSpecTime(_ModuleNoStateBuffers):
 
 
 def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
-                window=None, pad=0, pad_mode="reflect", power=1., **kwargs):
+                window=None, pad=0, pad_mode="reflect", power=1., mono=True, **kwargs):
     """
     Get spectrogram module.
 
@@ -255,9 +271,10 @@ def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
         pad_mode: padding method (see torch.nn.functional.pad).
             Defaults to "reflect".
         power (float): Exponent of the magnitude. Defaults to 1.
+        mono (bool): Downmix to mono.
         **kwargs: Other torch.stft parameters, see torch.stft for more details.
     """
-    return nn.Sequential(
+    modules = nn.Sequential(
         STFT(
             fft_len,
             hop_len,
@@ -267,6 +284,8 @@ def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
             pad_mode,
             **kwargs),
         ComplexNorm(power))
+    if mono:
+        modules.add_module(SpectralDownmix(power))
 
 
 def Melspectrogram(
