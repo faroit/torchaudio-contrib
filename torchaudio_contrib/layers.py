@@ -270,7 +270,7 @@ class StretchSpecTime(_ModuleNoStateBuffers):
 
 
 def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
-                window=None, pad=0, pad_mode="reflect", power=1., mono=True, **kwargs):
+                window=None, pad=0, pad_mode="reflect", power=1., mono=False, **kwargs):
     """
     Get spectrogram module.
 
@@ -300,7 +300,7 @@ def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
             **kwargs),
         ComplexNorm(power))
     if mono:
-        modules.add_module(SpectralDownmix(power))
+        modules.add_module(DownmixSpectrum())
 
 
 def Melspectrogram(
