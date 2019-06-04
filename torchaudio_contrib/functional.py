@@ -1,6 +1,7 @@
 import torch
 import math
 import torch.nn.functional as F
+import torchaudio
 
 
 def _mel_to_hertz(mel, htk):
@@ -100,7 +101,28 @@ def stft(waveforms, fft_len, hop_len, window,
     if add_batch_dim:
         complex_specgrams = complex_specgrams.reshape(complex_specgrams.shape[1:])
 
-    return complex_specgrams
+def downmix_waveform(waveform, ch_dim=1):
+    """
+    Args:
+        waveform (Tensor): (batch, channel, time)
+    Returns:
+        waveform (Tensor): (batch, 1, time)
+
+    """
+
+    return torchaudio.functional.downmix_mono(waveform, ch_dim=ch_dim)
+
+
+def downmix_spectrum(mag_specgram, ch_dim=1):
+    """
+    Args:
+        specgram (Tensor): (batch, channel, num_bins, time)
+    Returns:
+        specgram (Tensor): (batch, 1, num_bins, time)
+
+    """
+
+    return torch.mean(mag_specgram, ch_dim, keepdim=True)
 
 
 def complex_norm(complex_tensor, power=1.0):
