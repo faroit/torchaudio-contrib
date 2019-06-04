@@ -270,7 +270,7 @@ class StretchSpecTime(_ModuleNoStateBuffers):
 
 
 def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
-                window=None, pad=0, pad_mode="reflect", power=1., mono=False, **kwargs):
+                window=None, pad=0, pad_mode="reflect", power=1., **kwargs):
     """
     Get spectrogram module.
 
@@ -286,10 +286,9 @@ def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
         pad_mode: padding method (see torch.nn.functional.pad).
             Defaults to "reflect".
         power (float): Exponent of the magnitude. Defaults to 1.
-        mono (bool): Downmix to mono.
         **kwargs: Other torch.stft parameters, see torch.stft for more details.
     """
-    modules = nn.Sequential(
+    return nn.Sequential(
         STFT(
             fft_len,
             hop_len,
@@ -299,8 +298,6 @@ def Spectrogram(fft_len=2048, hop_len=None, frame_len=None,
             pad_mode,
             **kwargs),
         ComplexNorm(power))
-    if mono:
-        modules.add_module(DownmixSpectrum())
 
 
 def Melspectrogram(
