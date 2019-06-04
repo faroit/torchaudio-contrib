@@ -2,12 +2,8 @@ import torch
 import math
 import torch.nn as nn
 
-<<<<<<< HEAD
 from .functional import stft, complex_norm, \
     downmix_spectrum, downmix_waveform, \
-=======
-from .functional import stft, complex_norm, spectral_downmix, \
->>>>>>> first attempt of mono downmix in the magnitude domain
     create_mel_filter, phase_vocoder, apply_filterbank, \
     amplitude_to_db, db_to_amplitude, \
     mu_law_encoding, mu_law_decoding
