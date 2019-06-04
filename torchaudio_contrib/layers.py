@@ -127,8 +127,8 @@ class DownmixWaveform(nn.Module):
     def __init__(self):
         super(DownmixWaveform, self).__init__()
 
-    def forward(self, waveform):
-        return downmix_waveform(waveform)
+    def forward(self, waveforms):
+        return downmix_waveform(waveforms)
 
     def __repr__(self):
         return self.__class__.__name__
@@ -142,8 +142,8 @@ class DownmixSpectrum(nn.Module):
     def __init__(self):
         super(DownmixSpectrum, self).__init__()
 
-    def forward(self, mag_specgram):
-        return downmix_spectrum(mag_specgram)
+    def forward(self, mag_specgrams):
+        return downmix_spectrum(mag_specgrams)
 
     def __repr__(self):
         return self.__class__.__name__
