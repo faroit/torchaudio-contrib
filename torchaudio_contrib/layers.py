@@ -3,7 +3,7 @@ import math
 import torch.nn as nn
 
 from .functional import stft, complex_norm, \
-    downmix_spectrum, downmix_waveform, \
+    spectrum_downmix, waveform_downmix, \
     create_mel_filter, phase_vocoder, apply_filterbank, \
     amplitude_to_db, db_to_amplitude, \
     mu_law_encoding, mu_law_decoding
@@ -119,31 +119,31 @@ class ComplexNorm(nn.Module):
         return self.__class__.__name__ + '(power={})'.format(self.power)
 
 
-class DownmixWaveform(nn.Module):
+class WaveformDownmix(nn.Module):
     """
-    Wrap torchaudio_contrib.downmix_waveform in an nn.Module.
+    Wrap torchaudio_contrib.waveform_downmix in an nn.Module.
     """
 
     def __init__(self):
-        super(DownmixWaveform, self).__init__()
+        super(WaveformDownmix, self).__init__()
 
     def forward(self, waveforms):
-        return downmix_waveform(waveforms)
+        return waveform_downmix(waveforms)
 
     def __repr__(self):
         return self.__class__.__name__
 
 
-class DownmixSpectrum(nn.Module):
+class SpectrumDownmix(nn.Module):
     """
-    Wrap torchaudio_contrib.downmix_spectrum in an nn.Module.
+    Wrap torchaudio_contrib.spectrum_downmix in an nn.Module.
     """
 
     def __init__(self):
-        super(DownmixSpectrum, self).__init__()
+        super(SpectrumDownmix, self).__init__()
 
     def forward(self, mag_specgrams):
-        return downmix_spectrum(mag_specgrams)
+        return spectrum_downmix(mag_specgrams)
 
     def __repr__(self):
         return self.__class__.__name__

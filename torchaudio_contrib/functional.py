@@ -100,7 +100,7 @@ def stft(waveforms, fft_len, hop_len, window,
     if add_batch_dim:
         complex_specgrams = complex_specgrams.reshape(complex_specgrams.shape[1:])
 
-def downmix_waveform(waveforms, ch_dim=1):
+def waveform_downmix(waveforms, ch_dim=1):
     """
     Args:
         waveforms (Tensor): (batch, channel, time)
@@ -112,7 +112,7 @@ def downmix_waveform(waveforms, ch_dim=1):
     return torch.mean(waveforms, ch_dim, keepdim=True)
 
 
-def downmix_spectrum(mag_specgrams, ch_dim=1):
+def spectrum_downmix(mag_specgrams, ch_dim=1):
     """
     Args:
         specgrams (Tensor): (batch, channel, num_bins, time)
